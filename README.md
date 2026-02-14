@@ -1,33 +1,37 @@
-# Kards Card Crawler (Kards 卡牌爬取工具)
+[English](./README.md) | [中文](./README-zh.md)
 
-这是一个基于 Python 的自动化工具，用于从 [Kards 官网](https://www.kards.com/) 爬取所有二战题材卡牌游戏 **Kards** 的卡牌数据及图片。
+# Kards Card Crawler
 
-## 🌟 功能特点
+A Python-based automation tool designed to crawl card images from the official [Kards](https://www.kards.com/) website, covering all cards from the WWII-themed CCG.
 
-- **全自动化爬取**：通过 GraphQL 接口获取所有国家（苏联、美国、日本、德国等）的卡牌信息。
-- **多维度分类**：自动按 **国家** 和 **花费 (Kredit)** 创建文件夹，分类保存图片。
-- **图片格式转换**：自动将官方使用的 `AVIF` 高压缩格式转换为通用的 `PNG` 格式。
-- **智能重命名**：优先使用卡牌的中文名称命名文件，若无中文名则使用原始 ID。
-- **防封禁机制**：内置请求延时（1秒）和 Session 复用，保护爬虫稳定运行。
+## 🌟 Key Features
 
-## 📂 目录结构示例
+- **Automated Crawling**: Fetches comprehensive card information for all nations (Soviet, USA, Japan, Germany, etc.) via the official GraphQL API.
+- **Multi-dimensional Organization**: Automatically categorizes and saves images into folders based on **Nation** and **Kredit Cost**.
+- **Format Conversion**: Automatically converts high-compression `AVIF` images from the official server into the widely compatible `PNG` format.
+- **Smart Renaming**: Prioritizes the Chinese card title for filenames; falls back to the original image ID if a name is unavailable.
+- **Anti-Ban Mechanism**: Includes a built-in request delay (1s) and `Session` reuse to ensure stable and respectful crawling.
 
-运行后，图片将按以下结构保存：
+## 📂 Directory Structure Example
+
+After running, images are organized as follows:
+
+Plaintext
 
 ```
 imgs/
-├── 苏联/
+├── Soviet/
 │   ├── 0k/
-│   │   └── 步兵第13步兵团.png
+│   │   └── 13th_Rifle_Regiment.png
 │   └── 1k/
-│       └── 扫射.png
-├── 美国/
+│       └── Strafe.png
+├── USA/
 └── ...
 ```
 
-## 🛠️ 安装依赖
+## 🛠️ Dependencies
 
-在使用之前，请确保你的环境中安装了 `requests` 和 `Pillow`（用于图片处理）：
+Ensure you have `requests` and `Pillow` (for image processing) installed in your environment:
 
 Bash
 
@@ -35,14 +39,14 @@ Bash
 pip install requests Pillow
 ```
 
-## 🚀 使用方法
+## 🚀 Usage
 
-1. **准备文件**：确保项目目录下有两个 Python 文件：
+1. **Prepare Files**: Ensure you have the following two Python files in your project directory:
 
-   - `main.py` (包含爬虫主循环的代码)
-   - `get_img.py` (包含图片下载和转换函数的代码)
+   - `main.py` (Contains the main crawler loop)
+   - `get_img.py` (Contains image downloading and conversion functions)
 
-2. **运行程序**：
+2. **Run the Program**:
 
    Bash
 
@@ -50,41 +54,27 @@ pip install requests Pillow
    python main.py
    ```
 
-3. **查看结果**：程序运行结束后，所有卡牌图片将出现在 `imgs/` 文件夹中。
+3. **View Results**: Once finished, all card images will be available in the `imgs/` folder.
 
-## ⚙️ 核心逻辑说明
+## ⚙️ Core Logic
 
-- **GraphQL API**：程序通过向 `https://api.kards.com/graphql` 发送 POST 请求来获取分页数据。
-- **数据过滤**：目前脚本配置为获取包含：
-  - `showSpawnables`: 衍生牌
-  - `showExiles`: 流亡牌
-  - `showReserved`: 预备牌（退环境卡牌）
-- **异常处理**：脚本会自动跳过已下载的图片，并清理文件名中的非法字符（如 `<>:"/\|?*`）。
+- **GraphQL API**: The program sends POST requests to `https://api.kards.com/graphql` to fetch paginated card data.
+- **Data Filtering**: The script is currently configured to include:
+  - `showSpawnables`: Token/Spawned cards.
+  - `showExiles`: Exile cards.
+  - `showReserved`: Reserved pool cards (rotated out of standard).
+- **Exception Handling**: The script automatically skips existing images and sanitizes filenames by removing illegal characters (e.g., `<>:"/\|?*`).
 
-## ⚙ 配置项
+## ⚙️ Configuration
 
-可以修改：
+You can customize the following parameters in the script:
 
-### 国家
+- **Nations**: `nationIds = [1, 2, 3, 4, 5, 6, 7, 8, 9]`
+- **Kredit Costs**: `kosts = [0, 1, 2, 3, 4, 5, 6, 7]`
+- **Language**: `"language": "zh"` (Change to `"en"` for English data)
 
-```
-nationIds = [1,2,3,4,5,6,7,8,9]
-```
+## ⚠️ Disclaimer
 
-### 费用（Kredits）
-
-```
-kosts = [0,1,2,3,4,5,6,7]
-```
-
-### 语言
-
-```
-"language": "zh"
-```
-
-## ⚠️ 注意事项
-
-- 本工具仅供个人学习及研究使用，请勿用于大规模商业用途。
-- 请尊重游戏官方的版权，合理控制爬取频率。
+- This tool is for personal study and research purposes only. Do not use it for large-scale commercial purposes.
+- Please respect the copyright of the game developers and control the crawling frequency reasonably.
 
