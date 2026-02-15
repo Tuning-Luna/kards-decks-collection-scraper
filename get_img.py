@@ -71,6 +71,11 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs"):
 
 
 if __name__ == "__main__":
-    # 测试代码
-    test_card = "convoy_attack.avif"
-    save_card_image(test_card)
+    production = "production.avif"
+    save_card_image(production, "production_生产", "imgs/中立")
+
+    routed_troops = "routed_troops.avif"
+    save_card_image(routed_troops, "routed_troops_溃军", "imgs/中立")
+
+    plan = "plan.avif"
+    save_card_image(plan, "plan_计划", "imgs/中立")
