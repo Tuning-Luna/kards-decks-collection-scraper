@@ -36,6 +36,9 @@ nation_names = {
     9: "芬兰",
 }
 
+# 用于记录已经下载过的 cardId
+downloaded_ids = set()
+
 selected_nation_ids = nationIds if nationIds else list(nation_names.keys())
 
 for nid in selected_nation_ids:
@@ -45,12 +48,12 @@ for nid in selected_nation_ids:
         while True:
             variables_payload = {
                 "language": "zh",
-                "showSpawnables": True,  # 衍生牌
-                "showExiles": True,  # 流亡牌
-                "showReserved": True,  # 预备牌
-                "nationIds": [nid],
-                "kredits": [k],
-                "offset": offset,
+                "showSpawnables": True,  # 是否包含衍生牌
+                "showExiles": True,  # 是否包含流亡牌
+                "showReserved": True,  # 是否包含预备牌
+                "nationIds": [nid],  # 国家ID
+                "kredits": [k],  # 费用
+                "offset": offset,  # 分页偏移量，每次请求20条
             }
 
             json_data = {
@@ -71,18 +74,42 @@ for nid in selected_nation_ids:
             for edge in edges:
                 node = edge.get("node", {})
                 card_json = node.get("json", {})
+
+                card_id = node.get("cardId")  # 用这个做唯一标识,而不是中文
                 image_name = card_json.get("image")
                 chinese_name = card_json.get("title", {}).get("zh-Hans")
-                if image_name:
-                    save_name = (
-                        chinese_name
-                        if chinese_name
-                        else os.path.splitext(image_name)[0]
-                    )
+
+                if image_name and card_id:
+
+                    import re
+
+                    def sanitize_filename(name):
+                        return re.sub(r'[\\/:*?"<>|]', "_", name)
+
+                    title = chinese_name if chinese_name else "unknown"
+                    title = sanitize_filename(title)
+
+                    save_name = f"{title}_{card_id}"
+
                     dest_dir = os.path.join("imgs", nname, f"{k}k")
+                    os.makedirs(dest_dir, exist_ok=True)
+
                     target_path = os.path.join(dest_dir, save_name + ".png")
-                    if not os.path.exists(target_path):
-                        save_card_image(image_name, save_name, dest_dir)
+
+                    # 优先用 card_id 判断是否重复
+                    if card_id in downloaded_ids:
+                        print(f"已下载过，跳过：{card_id}")
+                        continue
+
+                    # 如果文件已存在，也加入集合
+                    if os.path.exists(target_path):
+                        print(f"文件已存在，跳过：{target_path}")
+                        downloaded_ids.add(card_id)
+                        continue
+
+                    # 下载
+                    save_card_image(image_name, save_name, dest_dir)
+                    downloaded_ids.add(card_id)
 
             has_next = (
                 data.get("data", {})

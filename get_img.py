@@ -37,7 +37,6 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs"):
         os.makedirs(dest_dir)
 
     try:
-        # 加入延时
         time.sleep(1)
 
         response = session.get(img_url, headers=headers)
@@ -59,11 +58,6 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs"):
                 save_name = save_name.replace(char, "_")
 
             new_filename = os.path.join(dest_dir, save_name)
-
-            # 检查文件是否已存在
-            if os.path.exists(new_filename):
-                print(f"文件已存在，跳过：{new_filename}")
-                return False
 
             img.save(new_filename, "PNG")
             print(f"图片已保存为 {new_filename}")
