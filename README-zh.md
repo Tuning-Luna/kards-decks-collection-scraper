@@ -46,13 +46,20 @@ pip install requests Pillow
 
 2. **运行程序**：
 
-   Bash
-
-   ```
+   ```bash
    python main.py
    ```
 
 3. **查看结果**：程序运行结束后，所有卡牌图片将出现在 `imgs/` 文件夹中。
+
+4. 但是无法爬取到中立卡牌，所以我又在`get_imgs.py`里面补充了，还需要运行：
+   ```bash
+   python get_img.py
+   ```
+
+   即可获得全部的中立卡牌。
+
+
 
 ## ⚙️ 核心逻辑说明
 
@@ -81,8 +88,10 @@ kosts = [0,1,2,3,4,5,6,7]
 
 ### 语言
 
-```
-"language": "zh"
+在`get_img.py`文件的`save_card_image`中有个`base_url`，修改里面的语言即可
+
+```python
+base_url = "https://www.kards.com/images/card/v47/zh-Hans/"
 ```
 
 ## ⚠️ 注意事项

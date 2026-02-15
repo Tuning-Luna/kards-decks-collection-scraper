@@ -56,6 +56,15 @@ pip install requests Pillow
 
 3. **View Results**: Once finished, all card images will be available in the `imgs/` folder.
 
+4. However, neutral cards cannot be fetched with the original logic, so I added additional handling in `get_imgs.py`. You also need to run:
+
+   ```bash
+   python get_img.py
+   ```
+
+   to download all neutral cards as well.
+
+
 ## ⚙️ Core Logic
 
 - **GraphQL API**: The program sends POST requests to `https://api.kards.com/graphql` to fetch paginated card data.
@@ -71,7 +80,14 @@ You can customize the following parameters in the script:
 
 - **Nations**: `nationIds = [1, 2, 3, 4, 5, 6, 7, 8, 9]`
 - **Kredit Costs**: `kosts = [0, 1, 2, 3, 4, 5, 6, 7]`
-- **Language**: `"language": "zh"` (Change to `"en"` for English data)
+- **Language**: 
+  In the `save_card_image` function inside the `get_img.py` file, there is a `base_url`. Modify the language segment in that URL as needed.
+
+  ```python
+  base_url = "https://www.kards.com/images/card/v47/zh-Hans/"
+  ```
+
+  
 
 ## ⚠️ Disclaimer
 
