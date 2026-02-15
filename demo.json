@@ -1,0 +1,128 @@
+{
+  "data": {
+    "cards": {
+      "pageInfo": {
+        "count": 38,
+        "hasNextPage": true,
+        "__typename": "PageInfo"
+      },
+      "edges": [
+        {
+          "node": {
+            "id": 69253,
+            "cardId": "12th_guards_mechanised",
+            "importId": "rg",
+            "json": {
+              "id": "12th_guards_mechanised",
+              "set": "BloodAndIron",
+              "text": {
+                "de-DE": "Wird Veteran, wenn du einen Panzer mit einem Angriff von 4 oder mehr einsetzt.",
+                "en-EN": "Becomes Veteran when you deploy a tank with 4 or more attack.",
+                "es-ES": "Se transforma en Veterana cuando despliegas un tanque con ataque 4 o superior.",
+                "fr-FR": "Devient Vétéran lorsque vous déployez un char dont l'attaque est supérieure ou égale à 4.",
+                "it-IT": "Diventa Veterano quando schieri un carro armato con 4 o più attacco.",
+                "ja-JP": "攻撃力が4以上の戦車を配備すると、ベテランになる。",
+                "ko-KR": "당신이 공격력이 4 이상인 전차를 배치하면 베테랑으로 승급합니다.",
+                "pl-PL": "Staje się Weteranem, gdy rozmieścisz czołg z atakiem 4 lub większym.",
+                "pt-BR": "Torna-se Veterano quando você implanta um tanque com 4 ou mais de ataque.",
+                "ru-RU": "Становится Ветераном, когда вы размещаете танк с атакой 4 или более.",
+                "zh-Hans": "攻击力不小于 4 的友方坦克部署时，升为老兵。",
+                "zh-Hant": "攻擊力不小於 4 的友方坦克部署時，升為老兵。"
+              },
+              "type": "infantry",
+              "image": "12th_guards_mechanised.avif",
+              "title": {
+                "de-DE": "12. MECHANISIERTE GARDESCHÜTZEN",
+                "en-EN": "12th GUARDS MECHANISED",
+                "es-ES": "12.ª MECANIZADA DE LA GUARDIA",
+                "fr-FR": "12e GARDES MÉCANISÉS",
+                "it-IT": "12° GUARDIE MECCANIZZATE",
+                "ja-JP": "第12機械化衛兵",
+                "ko-KR": "제12근위기계화여단",
+                "pl-PL": "12 GWARDYJSKA BRYGADA ZMECHANIZOWANA",
+                "pt-BR": "12º GUARDAS MECANIZADOS",
+                "ru-RU": "12-я ГВАРДЕЙСКАЯ МЕХАНИЗИРОВАННАЯ БРИГАДА",
+                "zh-Hans": "近卫机械化第 12 旅",
+                "zh-Hant": "近衛機械化第 12 旅"
+              },
+              "attack": 2,
+              "rarity": "Standard",
+              "defense": 1,
+              "faction": "Soviet",
+              "kredits": 1,
+              "reserved": false,
+              "import_id": "rg",
+              "attributes": [
+                "BecomesVeteran:12th_guards_mechanised_vet",
+                "OnlySpawnable",
+                "smokescreen"
+              ],
+              "operationCost": 1
+            },
+            "reserved": false,
+            "imageUrl": "/images/card/v47/zh-Hans/12th_guards_mechanised.avif",
+            "thumbUrl": "/images/card/v47/zh-Hans/thumb/12th_guards_mechanised.avif",
+            "__typename": "Card"
+          },
+          "__typename": "CardNode"
+        },
+        {
+          "node": {
+            "id": 69254,
+            "cardId": "12th_guards_mechanised_vet",
+            "importId": "",
+            "json": {
+              "id": "12th_guards_mechanised_vet",
+              "set": "Special",
+              "text": {
+                "de-DE": "Ziehe 2 Karten, wenn diese Einheit Veteran wird.",
+                "en-EN": "Draw 2 cards when this unit becomes Veteran.",
+                "es-ES": "Roba 2 cartas cuando esta unidad se transforma en Veterana.",
+                "fr-FR": "Piochez 2 cartes lorsque cette unité devient Vétéran.",
+                "it-IT": "Quando questa unità diventa Veterano, pesca 2 carte.",
+                "ja-JP": "このユニットがベテランになるとき、カードを2枚引く。",
+                "ko-KR": "이 유닛이 베테랑으로 승급할 때 카드를 2장 뽑습니다.",
+                "pl-PL": "Dobierz 2 karty, gdy ta jednostka zostanie Weteranem.",
+                "pt-BR": "Compre 2 cartas quando esta unidade se tornar Veterana.",
+                "ru-RU": "Когда этот отряд становится Ветераном, вы берёте 2 карты.",
+                "zh-Hans": "升为老兵时，抽 2 张牌。",
+                "zh-Hant": "升為老兵時，抽 2 張牌。"
+              },
+              "type": "infantry",
+              "image": "12th_guards_mechanised_vet.avif",
+              "title": {
+                "de-DE": "12. MECHANISIERTE GARDESCHÜTZEN",
+                "en-EN": "12th GUARDS MECHANISED",
+                "es-ES": "12.ª MECANIZADA DE LA GUARDIA",
+                "fr-FR": "12e GARDES MÉCANISÉS",
+                "it-IT": "12° GUARDIE MECCANIZZATE",
+                "ja-JP": "第12機械化衛兵",
+                "ko-KR": "제12근위기계화여단",
+                "pl-PL": "12 GWARDYJSKA BRYGADA ZMECHANIZOWANA",
+                "pt-BR": "12º GUARDAS MECANIZADOS",
+                "ru-RU": "12-я ГВАРДЕЙСКАЯ МЕХАНИЗИРОВАННАЯ БРИГАДА",
+                "zh-Hans": "近卫机械化第 12 旅",
+                "zh-Hant": "近衛機械化第 12 旅"
+              },
+              "attack": 2,
+              "rarity": "Standard",
+              "defense": 2,
+              "faction": "Soviet",
+              "kredits": 1,
+              "reserved": false,
+              "import_id": "",
+              "attributes": ["VeteranOf:12th_guards_mechanised", "blitz"],
+              "operationCost": 1
+            },
+            "reserved": false,
+            "imageUrl": "/images/card/v47/zh-Hans/12th_guards_mechanised_vet.avif",
+            "thumbUrl": "/images/card/v47/zh-Hans/thumb/12th_guards_mechanised_vet.avif",
+            "__typename": "Card"
+          },
+          "__typename": "CardNode"
+        }
+      ],
+      "__typename": "CardConnection"
+    }
+  }
+}
