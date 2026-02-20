@@ -71,6 +71,8 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs"):
 
 
 if __name__ == "__main__":
+
+    #  单独保存中立图片
     production = "production.avif"
     save_card_image(production, "production_生产", "imgs/中立")
 
