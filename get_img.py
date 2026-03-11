@@ -74,14 +74,18 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs"):
         return False
 
 
+def save_neutral_card_image(card_name, custom_filename):
+    save_card_image(card_name, custom_filename, "imgs/中立")
+
+
 if __name__ == "__main__":
 
-    #  单独保存中立图片
     production = "production.avif"
-    save_card_image(production, "production_生产", "imgs/中立")
-
     routed_troops = "routed_troops.avif"
-    save_card_image(routed_troops, "routed_troops_溃军", "imgs/中立")
-
     plan = "plan.avif"
-    save_card_image(plan, "plan_计划", "imgs/中立")
+
+    save_neutral_card_image(production, "production_生产")
+    save_neutral_card_image(routed_troops, "routed_troops_溃军")
+    save_neutral_card_image(plan, "plan_计划")
+
+# save_card_image("2nd_california.avif", "加州_2nd_california", "./")
