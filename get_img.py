@@ -21,7 +21,10 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs"):
     :param card_name: 原始图片文件名 (如 "convoy_attack.avif")
     :param custom_filename: 可选的自定义保存文件名 (如 "护航攻击")，不需要带后缀
     """
-    base_url = "https://www.kards.com/images/card/v47/zh-Hans/"
+    base_url = "https://www.kards.com/images/card/v48/zh-Hans/"
+    # v47：国土阵线
+    # v48是目前最新版本：国土阵线：早期战争
+    # 之前的版本会403
     img_url = base_url + card_name
 
     headers = {
