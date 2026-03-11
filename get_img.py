@@ -3,9 +3,16 @@ import os
 import time
 from PIL import Image
 from io import BytesIO
+import httpx
+from curl_cffi import requests
 
 # 使用全局会话对象，避免重复创建
-session = requests.Session()
+# session = requests.Session()
+
+proxies = {
+    "http": "http://127.0.0.1:7897",
+    "https": "http://127.0.0.1:7897",
+}
 
 
 def save_card_image(card_name, custom_filename=None, dest_dir="imgs"):
@@ -18,19 +25,8 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs"):
     img_url = base_url + card_name
 
     headers = {
-        "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-        "accept-language": "en-GB,en;q=0.9,zh-CN;q=0.8,zh;q=0.7",
-        "cache-control": "no-cache",
-        "pragma": "no-cache",
-        "priority": "i",
-        "referer": "https://www.kards.com/zh/decks/collection",
-        "sec-ch-ua": '"Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": '"Windows"',
-        "sec-fetch-dest": "image",
-        "sec-fetch-mode": "no-cors",
-        "sec-fetch-site": "same-origin",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0",
+        "Referer": "https://www.kards.com/",
     }
 
     if not os.path.exists(dest_dir):
@@ -39,7 +35,15 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs"):
     try:
         time.sleep(1)
 
-        response = session.get(img_url, headers=headers)
+        # response = session.get(img_url, headers=headers, timeout=10)
+
+        # client = httpx.Client(headers=headers, http2=True)
+        # response = client.get(img_url)
+
+        response = requests.get(
+            img_url, headers=headers, impersonate="chrome110", proxies=proxies
+        )
+
         if response.status_code == 200:
             # 将 avif 转为 png
             img = Image.open(BytesIO(response.content))
