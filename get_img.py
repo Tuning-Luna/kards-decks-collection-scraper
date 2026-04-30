@@ -6,25 +6,15 @@ from io import BytesIO
 import httpx
 from curl_cffi import requests
 
-# 使用全局会话对象，避免重复创建
-# session = requests.Session()
-
 proxies = {
     "http": "http://127.0.0.1:7897",
     "https": "http://127.0.0.1:7897",
 }
 
-
-def save_card_image(card_name, custom_filename=None, dest_dir="imgs"):
-    """
-    下载卡牌图片并将 avif 格式转换为 png，保存到 imgs/ 目录下
-    :param card_name: 原始图片文件名 (如 "convoy_attack.avif")
-    :param custom_filename: 可选的自定义保存文件名 (如 "护航攻击")，不需要带后缀
-    """
+def save_card_image(card_name, custom_filename=None, dest_dir="imgs", retry=3):
     base_url = "https://www.kards.com/images/card/v48/zh-Hans/"
     # v47：国土阵线
-    # v48是目前最新版本：国土阵线：早期战争
-    # 之前的版本会403
+    # v48：国土阵线：早期战争
     img_url = base_url + card_name
 
     headers = {
@@ -32,50 +22,54 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs"):
         "Referer": "https://www.kards.com/",
     }
 
-    if not os.path.exists(dest_dir):
-        os.makedirs(dest_dir)
+    os.makedirs(dest_dir, exist_ok=True)
 
-    try:
-        time.sleep(1)
+    for attempt in range(retry):
+        try:
+            time.sleep(0.5)
 
-        # response = session.get(img_url, headers=headers, timeout=10)
+            response = requests.get(
+                img_url,
+                headers=headers,
+                impersonate="chrome110",
+                proxies=proxies,
+                timeout=20,
+                verify=True,
+                http_version=1,
+            )
 
-        # client = httpx.Client(headers=headers, http2=True)
-        # response = client.get(img_url)
+            if response.status_code != 200:
+                print(f"[{attempt+1}] 请求失败 {response.status_code}: {img_url}")
+                continue
 
-        response = requests.get(
-            img_url, headers=headers, impersonate="chrome110", proxies=proxies
-        )
-
-        if response.status_code == 200:
-            # 将 avif 转为 png
-            img = Image.open(BytesIO(response.content))
+            try:
+                img = Image.open(BytesIO(response.content)).convert("RGBA")
+            except Exception as img_err:
+                print(f"[{attempt+1}] 图片解码失败: {img_err}")
+                continue
 
             if custom_filename:
-                # 使用自定义文件名
                 save_name = custom_filename + ".png"
             else:
-                # 使用原始文件名的 base_name
                 base_name, _ = os.path.splitext(card_name)
                 save_name = base_name + ".png"
 
-            # 清理文件名中的非法字符
             invalid_chars = '<>:"/\\|?*'
-            for char in invalid_chars:
-                save_name = save_name.replace(char, "_")
+            for c in invalid_chars:
+                save_name = save_name.replace(c, "_")
 
-            new_filename = os.path.join(dest_dir, save_name)
+            path = os.path.join(dest_dir, save_name)
+            img.save(path, "PNG")
 
-            img.save(new_filename, "PNG")
-            print(f"图片已保存为 {new_filename}")
+            print(f"✔ 已保存 {path}")
             return True
-        else:
-            print(f"请求失败，状态码：{response.status_code}, URL: {img_url}")
-            return False
-    except Exception as e:
-        print(f"处理图片 {card_name} 时出错: {e}")
-        return False
 
+        except Exception as e:
+            print(f"[{attempt+1}] 失败: {e}")
+            time.sleep(1)
+
+    print(f"❌ 最终失败: {card_name}")
+    return False
 
 def save_neutral_card_image(card_name, custom_filename):
     save_card_image(card_name, custom_filename, "imgs/中立")
