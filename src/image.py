@@ -84,8 +84,12 @@ def save_neutral_card_image(card_name, custom_filename):
     save_card_image(card_name, custom_filename, "imgs/中立")
 
 
-if __name__ == "__main__":
-    # 单独下载 3 张特殊的中立卡牌
+def download_neutral_cards():
+    """下载 3 张特殊的中立卡牌（生产、溃军、计划）"""
     save_neutral_card_image("production.avif", "production_生产")
     save_neutral_card_image("routed_troops.avif", "routed_troops_溃军")
     save_neutral_card_image("plan.avif", "plan_计划")
+
+
+if __name__ == "__main__":
+    download_neutral_cards()
