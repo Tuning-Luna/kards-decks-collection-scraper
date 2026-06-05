@@ -1,9 +1,7 @@
-import requests
 import os
 import time
 from PIL import Image
 from io import BytesIO
-import httpx
 from curl_cffi import requests
 
 proxies = {

@@ -24,6 +24,8 @@ headers = {
 
 kosts = [0, 1, 2, 3, 4, 5, 6, 7]
 nationIds = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+# 不会使用，只是为了方便查看
 nation_names = {
     1: "苏联",
     2: "美国",
@@ -63,7 +65,7 @@ for nid in selected_nation_ids:
             }
 
             response = requests.post(
-                "https://api.kards.com/graphql", headers=headers, json=json_data
+                "https://herokuapi.kards.com/graphql", headers=headers, json=json_data
             )
 
             data = response.json()
