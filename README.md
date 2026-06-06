@@ -10,87 +10,76 @@ A Python-based automation tool designed to crawl card images from the official [
 - **Multi-dimensional Organization**: Automatically categorizes and saves images into folders based on **Nation** and **Kredit Cost**.
 - **Format Conversion**: Automatically converts high-compression `AVIF` images from the official server into the widely compatible `PNG` format.
 - **Smart Renaming**: Prioritizes the Chinese card title for filenames; falls back to the original image ID if a name is unavailable.
-- **Anti-Ban Mechanism**: Includes a built-in request delay (1s) and `Session` reuse to ensure stable and respectful crawling.
+- **Anti-Ban Mechanism**: Includes built-in request delay and `curl_cffi` browser fingerprint impersonation for stable crawling.
 
-## 📂 Directory Structure Example
-
-After running, images are organized as follows:
-
-Plaintext
+## 📂 Directory Structure
 
 ```
 imgs/
-├── Soviet/
+├── 苏联/
 │   ├── 0k/
-│   │   └── 13th_Rifle_Regiment.png
+│   │   └── 步兵第13步兵团.png
 │   └── 1k/
-│       └── Strafe.png
-├── USA/
+│       └── 扫射.png
+├── 美国/
+├── 中立/
+│   ├── production_生产.png
+│   ├── routed_troops_溃军.png
+│   └── plan_计划.png
 └── ...
 ```
 
 ## 🛠️ Dependencies
 
-Ensure you have `requests` and `Pillow` (for image processing) installed in your environment:
+Install dependencies from `requirements.txt`:
 
-Bash
+```bash
+pip install -r requirements.txt
+```
 
-```
-pip install requests Pillow
-```
+Key packages: `requests` (GraphQL API), `curl_cffi` (image download with fingerprint impersonation), `Pillow` (image format conversion).
 
 ## 🚀 Usage
 
-1. **Prepare Files**: Ensure you have the following two Python files in your project directory:
+Simply run:
 
-   - `main.py` (Contains the main crawler loop)
-   - `get_img.py` (Contains image downloading and conversion functions)
+```bash
+python main.py
+```
 
-2. **Run the Program**:
+This will:
+1. Crawl all regular cards across all nations and kredit costs
+2. Automatically download 3 neutral cards (Production, Routed Troops, Plan)
 
-   Bash
+All images will be saved in the `imgs/` folder.
 
-   ```
-   python main.py
-   ```
+## 📁 Project Structure
 
-3. **View Results**: Once finished, all card images will be available in the `imgs/` folder.
-
-4. However, neutral cards cannot be fetched with the original logic, so I added additional handling in `get_imgs.py`. You also need to run:
-
-   ```bash
-   python get_img.py
-   ```
-
-   to download all neutral cards as well.
-
+```
+main.py                 # Entry point
+src/
+    config.py           # Configuration (API URL, headers, nations, query)
+    image.py            # Image download module (curl_cffi + Pillow)
+    scraper.py          # Crawler main logic (pagination, dedup, orchestration)
+```
 
 ## ⚙️ Core Logic
 
-- **GraphQL API**: The program sends POST requests to `https://api.kards.com/graphql` to fetch paginated card data.
-- **Data Filtering**: The script is currently configured to include:
-  - `showSpawnables`: Token/Spawned cards.
-  - `showExiles`: Exile cards.
-  - `showReserved`: Reserved pool cards (rotated out of standard).
-- **Exception Handling**: The script automatically skips existing images and sanitizes filenames by removing illegal characters (e.g., `<>:"/\|?*`).
+- **GraphQL API**: Sends POST requests to `https://herokuapi.kards.com/graphql` to fetch paginated card data.
+- **Data Filtering**: Includes `showSpawnables` (token cards), `showExiles` (exile cards), `showReserved` (reserved pool cards).
+- **Deduplication**: Skips previously downloaded cards by tracking `cardId` across sessions.
+- **Exception Handling**: Automatically skips existing images and sanitizes filenames.
 
 ## ⚙️ Configuration
 
-You can customize the following parameters in the script:
+Edit `src/config.py` to customize:
 
-- **Nations**: `nationIds = [1, 2, 3, 4, 5, 6, 7, 8, 9]`
-- **Kredit Costs**: `kosts = [0, 1, 2, 3, 4, 5, 6, 7]`
-- **Language**: 
-  In the `save_card_image` function inside the `get_img.py` file, there is a `base_url`. Modify the language segment in that URL as needed.
-
-  ```python
-  base_url = "https://www.kards.com/images/card/v47/zh-Hans/"
-  ```
-
-  
+- **Nations**: `NATION_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9]`
+- **Kredit Costs**: `KOSTS = [0, 1, 2, 3, 4, 5, 6, 7]`
+- **Language**: Change the language segment in `IMAGE_BASE_URL` (e.g., `zh-Hans` → `en-EN`)
+- **Proxy**: Update `PROXIES` if needed
 
 ## ⚠️ Disclaimer
 
 - This tool is for personal study and research purposes only. Do not use it for large-scale commercial purposes.
 - Please respect the copyright of the game developers and control the crawling frequency reasonably.
-
