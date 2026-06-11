@@ -3,8 +3,8 @@
 # GraphQL API 端点
 API_URL = "https://herokuapi.kards.com/graphql"
 
-# 卡牌图片基础 URL (v48 = 国土阵线：早期战争)
-IMAGE_BASE_URL = "https://www.kards.com/images/card/v48/zh-Hans/"
+# 卡牌图片基础 URL (v51 = 澳新风暴）
+IMAGE_BASE_URL = "https://www.kards.com/images/card/v51/zh-Hans/"
 
 # ---- 代理配置 ----
 PROXIES = {
@@ -49,6 +49,7 @@ NATION_NAMES = {
     7: "意大利",
     8: "波兰",
     9: "芬兰",
+    10:"澳新"
 }
 
 # ---- GraphQL 查询语句 ----
