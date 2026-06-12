@@ -1,85 +1,66 @@
 [English](./README.md) | [中文](./README-zh.md)
 
-# Kards Card Crawler (Kards 卡牌爬取工具)
+# Kards Card Crawler（Kards 卡牌爬虫）
 
-这是一个基于 Python 的自动化工具，用于从 [Kards 官网](https://www.kards.com/) 爬取所有二战题材卡牌游戏 **Kards** 的卡牌图片。
+自动下载 [Kards](https://www.kards.com/) 所有卡牌图片的 Python 工具。
 
-## 🌟 功能特点
+## 工作原理
 
-- **全自动化爬取**：通过 GraphQL 接口获取所有国家（苏联、美国、日本、德国等）的卡牌信息。
-- **多维度分类**：自动按 **国家** 和 **花费 (Kredit)** 创建文件夹，分类保存图片。
-- **图片格式转换**：自动将官方使用的 `AVIF` 高压缩格式转换为通用的 `PNG` 格式。
-- **智能重命名**：优先使用卡牌的中文名称命名文件，若无中文名则使用原始 ID。
-- **防封禁机制**：内置请求延时和 `curl_cffi` 浏览器指纹模拟，保障稳定爬取。
+1. **GraphQL API** — 请求 `https://herokuapi.kards.com/graphql` 获取卡牌元数据（名称、阵营、费用、图片路径）
+2. **图片下载** — 通过 `curl_cffi`（浏览器指纹模拟）从 CDN 拉取 AVIF 格式原图
+3. **格式转换** — 用 Pillow 将 AVIF 转为 PNG
 
-## 📂 目录结构示例
+爬虫遍历所有阵营（11 个国家 + 中立）和费用（0–7），自动分页并去重。
+
+## 目录结构
 
 ```
 imgs/
 ├── 苏联/
 │   ├── 0k/
-│   │   └── 步兵第13步兵团.png
-│   └── 1k/
-│       └── 扫射.png
+│   │   └── 步兵第13步兵团_13th_rifles.png
+│   └── ...
 ├── 美国/
+│   └── ...
 ├── 中立/
-│   ├── production_生产.png
-│   ├── routed_troops_溃军.png
-│   └── plan_计划.png
+│   ├── 0k/
+│   ├── 1k/
+│   └── ...
 └── ...
 ```
 
-## 🛠️ 安装依赖
+文件名格式 `{中文名}_{cardId}.png`，无中文名则回退为 `unknown_{cardId}.png`。
 
-通过 `requirements.txt` 一键安装：
+## 使用
 
 ```bash
+git clone https://github.com/Tuning-Luna/kards-decks-collection-scraper.git
+cd kards-decks-collection-scraper
 pip install -r requirements.txt
-```
-
-核心依赖：`requests` (API 请求)、`curl_cffi` (图片下载，含指纹模拟)、`Pillow` (图片格式转换)。
-
-## 🚀 使用方法
-
-直接运行主程序即可：
-
-```bash
 python main.py
 ```
 
-脚本会自动完成：
-1. 爬取所有国家、所有费用的常规卡牌
-2. 自动下载 3 张特殊的中立卡牌（生产、溃军、计划）
+## 配置项
 
-所有图片保存在 `imgs/` 文件夹中。
+编辑 `src/config.py`：
 
-## 📁 项目结构
+| 配置             | 说明                     | 默认值                     |
+| ---------------- | ------------------------ | -------------------------- |
+| `NATION_IDS`     | 阵营 ID 列表（0 = 中立） | `[1..10, 0]`               |
+| `KOSTS`          | 卡牌费用范围             | `[0, 1, 2, 3, 4, 5, 6, 7]` |
+| `IMAGE_BASE_URL` | 修改语言段切换语言       | `.../zh-Hans/`             |
+| `PROXIES`        | HTTP/HTTPS 代理          | `http://127.0.0.1:7897`    |
+
+## 项目结构
 
 ```
-main.py                 # 入口文件，脚本启动
+main.py                 # 入口
 src/
-    config.py           # 配置常量（API 地址、请求头、国家/费用参数、GraphQL 查询）
-    image.py            # 图片下载模块（基于 curl_cffi + Pillow）
+    config.py           # API 配置、请求头、GraphQL 查询、阵营/费用参数
     scraper.py          # 爬取主逻辑（分页、去重、编排）
+    image.py            # AVIF → PNG 下载（curl_cffi + Pillow）
 ```
 
-## ⚙️ 核心逻辑说明
+## 免责声明
 
-- **GraphQL API**：向 `https://herokuapi.kards.com/graphql` 发送 POST 请求获取分页数据。
-- **数据过滤**：包含 `showSpawnables`（衍生牌）、`showExiles`（流亡牌）、`showReserved`（预备牌）。
-- **去重机制**：通过 `cardId` 追踪已下载的卡牌，避免重复。
-- **异常处理**：自动跳过已存在图片，清理文件名中的非法字符。
-
-## ⚙ 配置项
-
-修改 `src/config.py` 进行调整：
-
-- **国家**：`NATION_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9]`
-- **费用**：`KOSTS = [0, 1, 2, 3, 4, 5, 6, 7]`
-- **语言**：修改 `IMAGE_BASE_URL` 中的语言段（如 `zh-Hans` → `en-EN`）
-- **代理**：按需更新 `PROXIES`
-
-## ⚠️ 注意事项
-
-- 本工具仅供个人学习及研究使用，请勿用于大规模商业用途。
-- 请尊重游戏官方的版权，合理控制爬取频率。
+仅供个人学习研究。请合理控制爬取频率，尊重游戏版权。

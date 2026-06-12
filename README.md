@@ -2,84 +2,65 @@
 
 # Kards Card Crawler
 
-A Python-based automation tool designed to crawl card images from the official [Kards](https://www.kards.com/) website, covering all cards from the WWII-themed CCG.
+Automatically download all card images from [Kards](https://www.kards.com/), the WWII CCG.
 
-## 🌟 Key Features
+## How it works
 
-- **Automated Crawling**: Fetches comprehensive card information for all nations (Soviet, USA, Japan, Germany, etc.) via the official GraphQL API.
-- **Multi-dimensional Organization**: Automatically categorizes and saves images into folders based on **Nation** and **Kredit Cost**.
-- **Format Conversion**: Automatically converts high-compression `AVIF` images from the official server into the widely compatible `PNG` format.
-- **Smart Renaming**: Prioritizes the Chinese card title for filenames; falls back to the original image ID if a name is unavailable.
-- **Anti-Ban Mechanism**: Includes built-in request delay and `curl_cffi` browser fingerprint impersonation for stable crawling.
+1. **GraphQL API** — queries `https://herokuapi.kards.com/graphql` for card metadata (name, faction, kredit cost, image path)
+2. **Image download** — fetches AVIF images from the CDN via `curl_cffi` (browser fingerprint impersonation)
+3. **Format conversion** — converts AVIF to PNG using Pillow
 
-## 📂 Directory Structure
+The crawler iterates over all factions (11 nations including Neutral) and kredit costs (0–7), with pagination and deduplication.
+
+## Folder structure
 
 ```
 imgs/
 ├── 苏联/
 │   ├── 0k/
-│   │   └── 步兵第13步兵团.png
-│   └── 1k/
-│       └── 扫射.png
+│   │   └── 步兵第13步兵团_13th_rifles.png
+│   └── ...
 ├── 美国/
+│   └── ...
 ├── 中立/
-│   ├── production_生产.png
-│   ├── routed_troops_溃军.png
-│   └── plan_计划.png
+│   ├── 0k/
+│   ├── 1k/
+│   └── ...
 └── ...
 ```
 
-## 🛠️ Dependencies
+Each file is named `{卡牌中文名}_{cardId}.png`. Falls back to `unknown_{cardId}.png` if no Chinese name is available.
 
-Install dependencies from `requirements.txt`:
+## Usage
 
 ```bash
+git clone https://github.com/Tuning-Luna/kards-decks-collection-scraper.git
+cd kards-decks-collection-scraper
 pip install -r requirements.txt
-```
-
-Key packages: `requests` (GraphQL API), `curl_cffi` (image download with fingerprint impersonation), `Pillow` (image format conversion).
-
-## 🚀 Usage
-
-Simply run:
-
-```bash
 python main.py
 ```
 
-This will:
-1. Crawl all regular cards across all nations and kredit costs
-2. Automatically download 3 neutral cards (Production, Routed Troops, Plan)
+## Configuration
 
-All images will be saved in the `imgs/` folder.
+Edit `src/config.py`:
 
-## 📁 Project Structure
+| Key              | Description                                 | Default                    |
+| ---------------- | ------------------------------------------- | -------------------------- |
+| `NATION_IDS`     | Faction IDs (0 = Neutral)                   | `[1..10, 0]`               |
+| `KOSTS`          | Kredit costs to crawl                       | `[0, 1, 2, 3, 4, 5, 6, 7]` |
+| `IMAGE_BASE_URL` | Change language (e.g. `zh-Hans` -> `en-EN`) | `.../zh-Hans/`             |
+| `PROXIES`        | HTTP/HTTPS proxy                            | `http://127.0.0.1:7897`    |
+
+## Project structure
 
 ```
 main.py                 # Entry point
 src/
-    config.py           # Configuration (API URL, headers, nations, query)
-    image.py            # Image download module (curl_cffi + Pillow)
-    scraper.py          # Crawler main logic (pagination, dedup, orchestration)
+    config.py           # API config, headers, query, nation/kredit params
+    scraper.py          # Crawl orchestration (pagination, dedup)
+    image.py            # AVIF → PNG download (curl_cffi + Pillow)
 ```
 
-## ⚙️ Core Logic
+## Disclaimer
 
-- **GraphQL API**: Sends POST requests to `https://herokuapi.kards.com/graphql` to fetch paginated card data.
-- **Data Filtering**: Includes `showSpawnables` (token cards), `showExiles` (exile cards), `showReserved` (reserved pool cards).
-- **Deduplication**: Skips previously downloaded cards by tracking `cardId` across sessions.
-- **Exception Handling**: Automatically skips existing images and sanitizes filenames.
-
-## ⚙️ Configuration
-
-Edit `src/config.py` to customize:
-
-- **Nations**: `NATION_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9]`
-- **Kredit Costs**: `KOSTS = [0, 1, 2, 3, 4, 5, 6, 7]`
-- **Language**: Change the language segment in `IMAGE_BASE_URL` (e.g., `zh-Hans` → `en-EN`)
-- **Proxy**: Update `PROXIES` if needed
-
-## ⚠️ Disclaimer
-
-- This tool is for personal study and research purposes only. Do not use it for large-scale commercial purposes.
-- Please respect the copyright of the game developers and control the crawling frequency reasonably.
+For personal study only. Please control crawl frequency and respect the game developer's copyright.
