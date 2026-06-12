@@ -1,0 +1,51 @@
+{
+  "node": {
+    "id": 85640,
+    "cardId": "cyclone",
+    "importId": "CE",
+    "json": {
+      "id": "cyclone",
+      "set": "OnlySpawnable",
+      "text": {
+        "de-DE": "Füge allen Feinden 2 Schaden zu. ",
+        "en-EN": "Deal 2 damage to all enemies.",
+        "es-ES": "Inflige 2 de daño a todos los enemigos. ",
+        "fr-FR": "Inflige 2 dégâts à tous les ennemis. ",
+        "it-IT": "Infliggi 2 danni a tutti i nemici. ",
+        "ja-JP": "敵全体に2ダメージを与える。",
+        "ko-KR": "모든 상대에 2의 피해를 입힙니다.",
+        "pl-PL": "Zadaj wszystkim wrogom 2 pkt obrażeń. ",
+        "pt-BR": "Cause 2 de dano a todos os inimigos.",
+        "ru-RU": "Наносит всем врагам 2 урона.",
+        "zh-Hans": "对所有敌方目标造成 2 点伤害。",
+        "zh-Hant": "對所有敵方目標造成 2 點傷害。"
+      },
+      "type": "order",
+      "image": "cyclone.avif",
+      "title": {
+        "de-DE": "ZYKLON",
+        "en-EN": "CYCLONE",
+        "es-ES": "CICLÓN",
+        "fr-FR": "CYCLONE",
+        "it-IT": "CICLONE",
+        "ja-JP": "サイクロン",
+        "ko-KR": "사이클론",
+        "pl-PL": "CYKLON",
+        "pt-BR": "CICLONE",
+        "ru-RU": "ЦИКЛОН",
+        "zh-Hans": "旋风",
+        "zh-Hant": "旋風"
+      },
+      "rarity": "Standard",
+      "faction": "Neutral",
+      "kredits": 6,
+      "reserved": false,
+      "import_id": "CE"
+    },
+    "reserved": false,
+    "imageUrl": "/images/card/v51/zh-Hans/cyclone.avif",
+    "thumbUrl": "/images/card/v51/zh-Hans/thumb/cyclone.avif",
+    "__typename": "Card"
+  },
+  "__typename": "CardNode"
+}

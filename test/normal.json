@@ -1,0 +1,51 @@
+{
+  "node": {
+    "id": 85354,
+    "cardId": "hmas_warramunga",
+    "importId": "ya",
+    "json": {
+      "id": "hmas_warramunga",
+      "set": "OceaniaStorm",
+      "text": {
+        "de-DE": "Wähle eine Karte in der Hand. Bewegen sie ganz nach links. Reduziere die Kosten um 1, wenn es sich um eine ANZAC-Karte handelt.",
+        "en-EN": "Choose a card in hand. Move it all the way to the left. Reduce its cost by 1 if it is an ANZAC card.",
+        "es-ES": "Elige una carta de tu mano. Colócala como la carta más a la izquierda de tu mano. Si es una carta de ANZAC, reduce su costo en 1.",
+        "fr-FR": "Choisissez une carte dans votre main. Déplacez-la tout à gauche. Son coût est réduit de 1 s'il s'agit d'une carte ANZAC.",
+        "it-IT": "Scegli una carta in mano e spostala completamente a sinistra. Se è una carta ANZAC, riducine il costo di 1.",
+        "ja-JP": "手札からカードを1枚選ぶ。それを左に動かす。それがANZACの場合、コストを1つ減らす。",
+        "ko-KR": "패에서 카드 한 장을 선택하여 가장 왼쪽에 놓습니다. 호주 뉴질랜드 카드인 경우 비용을 1 낮춥니다.",
+        "pl-PL": "Wybierz kartę z ręki. Przesuń ją całkowicie w lewo. Zmniejsz jej koszt o 1, jeśli jest to karta ANZAC.",
+        "pt-BR": "Escolha uma carta na mão. Mova-a para a posição mais à esquerda da sua mão. Reduza o custo dela em 1 se ela for uma carta ANZAC.",
+        "ru-RU": "Выберите карту в руке. Она перемещается в крайнюю левую позицию. Её стоимость уменьшается на 1, если это карта АНЗАК.",
+        "zh-Hans": "选择 1 张手牌。将其移至最左侧。若是澳新军团牌，使其获得 -1 花费。",
+        "zh-Hant": "選擇 1 張手牌。將其移至最左側。若是澳新軍團牌，使其獲得 -1 花費。"
+      },
+      "type": "order",
+      "image": "hmas_warramunga.avif",
+      "title": {
+        "de-DE": "HMAS WARRAMUNGA",
+        "en-EN": "HMAS WARRAMUNGA",
+        "es-ES": "HMAS WARRAMUNGA",
+        "fr-FR": "HMAS WARRAMUNGA",
+        "it-IT": "HMAS WARRAMUNGA",
+        "ja-JP": "HMAS ワラムンガ",
+        "ko-KR": "HMAS 와라문가",
+        "pl-PL": "HMAS WARRAMUNGA",
+        "pt-BR": "HMAS WARRAMUNGA",
+        "ru-RU": "HMAS WARRAMUNGA",
+        "zh-Hans": "HMAS 瓦拉孟加号",
+        "zh-Hant": "HMAS 瓦拉孟加號"
+      },
+      "rarity": "Standard",
+      "faction": "Anzac",
+      "kredits": 0,
+      "reserved": false,
+      "import_id": "ya"
+    },
+    "reserved": false,
+    "imageUrl": "/images/card/v51/zh-Hans/hmas_warramunga.avif",
+    "thumbUrl": "/images/card/v51/zh-Hans/thumb/hmas_warramunga.avif",
+    "__typename": "Card"
+  },
+  "__typename": "CardNode"
+}
