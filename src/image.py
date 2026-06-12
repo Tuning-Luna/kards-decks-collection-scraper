@@ -77,19 +77,3 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs", retry=3):
 
     print(f"❌ 最终失败: {card_name}")
     return False
-
-
-def save_neutral_card_image(card_name, custom_filename):
-    """保存中立卡牌图片到 imgs/中立 目录"""
-    save_card_image(card_name, custom_filename, "imgs/中立")
-
-
-def download_neutral_cards():
-    """下载 3 张特殊的中立卡牌（生产、溃军、计划）"""
-    save_neutral_card_image("production.avif", "production_生产")
-    save_neutral_card_image("routed_troops.avif", "routed_troops_溃军")
-    save_neutral_card_image("plan.avif", "plan_计划")
-
-
-if __name__ == "__main__":
-    download_neutral_cards()

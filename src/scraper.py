@@ -2,6 +2,7 @@
 
 import os
 import re
+import time
 
 import requests
 
@@ -29,16 +30,20 @@ def scrape_all_cards():
                     "showSpawnables": True,
                     "showExiles": True,
                     "showReserved": True,
-                    "nationIds": [nid],
                     "kredits": [k],
                     "offset": offset,
                 }
+                # 不为0时，添加国家ID，否则爬取所有国家（只剩下中立国家）
+                if nid != 0:
+                    variables_payload["nationIds"] = [nid]
 
                 json_data = {
                     "operationName": "getCards",
                     "variables": variables_payload,
                     "query": CARDS_QUERY,
                 }
+
+                time.sleep(1)
 
                 response = requests.post(
                     API_URL, headers=HEADERS, json=json_data
