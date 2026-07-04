@@ -3,8 +3,9 @@
 # GraphQL API 端点
 API_URL = "https://herokuapi.kards.com/graphql"
 
-# 卡牌图片基础 URL (v51 = 澳新风暴）
-IMAGE_BASE_URL = "https://www.kards.com/images/card/v51/zh-Hans/"
+# 卡牌图片基础 URL
+# v52 = 澳新风暴扩展包及 7 月平衡性调整版本；zh-Hans = 简中语言
+IMAGE_BASE_URL = "https://www.kards.com/images/card/v52/zh-Hans/"
 
 # ---- 代理配置 ----
 PROXIES = {
