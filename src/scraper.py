@@ -3,9 +3,20 @@
 import os
 import time
 
-import requests
+from curl_cffi import exceptions as cffi_exceptions  # noqa: N813 — curl_cffi 的异常名
+from curl_cffi import requests  # noqa: ICN001 — 项目统一用 curl_cffi 以便走代理
 
-from src.config import API_URL, CARDS_QUERY, HEADERS, KOSTS, NATION_IDS, NATION_NAMES
+from src.config import (
+    API_URL,
+    CARDS_QUERY,
+    HEADERS,
+    KOSTS,
+    NATION_IDS,
+    NATION_NAMES,
+    PROXIES,
+    REQUEST_TIMEOUT,
+    RETRY,
+)
 from src.image import save_card_image
 from src.utils import sanitize_filename
 
@@ -16,7 +27,7 @@ PAGE_SIZE = 20
 def fetch_card_page(nid, k, offset):
     """请求单个分页，返回 (edges, has_next) 二元组。
 
-    请求异常或非 2xx 时抛出 requests.exceptions.RequestException；
+    请求异常或非 2xx 时抛出 requests.exceptions.RequestException（由调用方决定续爬）；
     响应结构缺失 data.cards 时返回空列表（视为无更多数据）。
     """
     variables_payload = {
@@ -37,14 +48,31 @@ def fetch_card_page(nid, k, offset):
         "query": CARDS_QUERY,
     }
 
-    time.sleep(1)
-    response = requests.post(API_URL, headers=HEADERS, json=json_data)
-    response.raise_for_status()
-    data = response.json()
-    cards = data.get("data", {}).get("cards", {})
-    if not cards:
-        return [], False
-    return cards.get("edges", []), cards.get("pageInfo", {}).get("hasNextPage", False)
+    for attempt in range(1, RETRY + 1):
+        try:
+            time.sleep(1)
+            response = requests.post(
+                API_URL,
+                headers=HEADERS,
+                json=json_data,
+                proxies=PROXIES,
+                timeout=REQUEST_TIMEOUT,
+                impersonate="chrome110",
+                verify=True,
+            )
+            response.raise_for_status()
+            data = response.json()
+            cards = data.get("data", {}).get("cards", {})
+            if not cards:
+                return [], False
+            return cards.get("edges", []), cards.get("pageInfo", {}).get("hasNextPage", False)
+        except requests.exceptions.RequestException as e:
+            print(f"请求失败（第 {attempt}/{RETRY} 次）：{e}")
+            time.sleep(2**attempt)
+
+    raise requests.exceptions.RequestException(
+        f"请求重试 {RETRY} 次仍失败：nid={nid} k={k} offset={offset}"
+    )
 
 
 def parse_card_node(node):
