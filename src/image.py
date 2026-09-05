@@ -4,8 +4,9 @@ import os
 import time
 from io import BytesIO
 
-from PIL import Image
 from curl_cffi import requests
+from curl_cffi.const import CurlHttpVersion
+from PIL import Image
 
 from src.config import IMAGE_BASE_URL, PROXIES
 
@@ -42,7 +43,7 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs", retry=3):
                 proxies=PROXIES,
                 timeout=20,
                 verify=True,
-                http_version=1,
+                http_version=CurlHttpVersion.V1_0,
             )
 
             if response.status_code != 200:

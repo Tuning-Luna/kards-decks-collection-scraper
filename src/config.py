@@ -1,5 +1,7 @@
 """Kards 卡牌爬虫 —— 配置常量"""
 
+from curl_cffi.requests import ProxySpec
+
 # GraphQL API 端点
 API_URL = "https://herokuapi.kards.com/graphql"
 
@@ -8,7 +10,7 @@ API_URL = "https://herokuapi.kards.com/graphql"
 IMAGE_BASE_URL = "https://www.kards.com/images/card/v52/zh-Hans/"
 
 # ---- 代理配置 ----
-PROXIES = {
+PROXIES: ProxySpec = {
     "http": "http://127.0.0.1:7897",
     "https": "http://127.0.0.1:7897",
 }
