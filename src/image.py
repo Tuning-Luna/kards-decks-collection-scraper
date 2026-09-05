@@ -10,7 +10,6 @@ from curl_cffi.const import CurlHttpVersion
 from PIL import Image
 
 from src.config import IMAGE_BASE_URL, PROXIES
-from src.utils import sanitize_filename
 
 logger = logging.getLogger(__name__)
 
