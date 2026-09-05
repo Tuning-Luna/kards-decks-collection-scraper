@@ -9,6 +9,7 @@ from curl_cffi.const import CurlHttpVersion
 from PIL import Image
 
 from src.config import IMAGE_BASE_URL, PROXIES
+from src.utils import sanitize_filename
 
 
 def save_card_image(card_name, custom_filename=None, dest_dir="imgs", retry=3):
@@ -61,10 +62,6 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs", retry=3):
             else:
                 base_name, _ = os.path.splitext(card_name)
                 save_name = base_name + ".png"
-
-            invalid_chars = '<>:"/\\|?*'
-            for c in invalid_chars:
-                save_name = save_name.replace(c, "_")
 
             path = os.path.join(dest_dir, save_name)
             img.save(path, "PNG")

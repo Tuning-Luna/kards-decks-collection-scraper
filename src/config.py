@@ -15,6 +15,10 @@ PROXIES: ProxySpec = {
     "https": "http://127.0.0.1:7897",
 }
 
+# ---- 请求参数 ----
+REQUEST_TIMEOUT = 20
+RETRY = 3
+
 # ---- HTTP 请求头 ----
 HEADERS = {
     "accept": "*/*",
