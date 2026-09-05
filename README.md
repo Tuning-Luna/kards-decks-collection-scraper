@@ -51,6 +51,15 @@ Edit `src/config.py`:
 | `IMAGE_BASE_URL` | Change language (e.g. `zh-Hans` -> `en-EN`) | `.../zh-Hans/`             |
 | `PROXIES`        | HTTP/HTTPS proxy                            | `http://127.0.0.1:7897`    |
 
+> ⚠️ **Note for users in mainland China**: reaching the Kards API/CDN requires a proxy that can
+> access the service. The default `7897` port is the author's local Clash port and is **unlikely to
+> match your machine**. Change `PROXIES` to your own proxy client's listening port (e.g. Clash `7890`,
+> v2rayN `10809`, SSR `1080` — whatever your local client reports), otherwise requests will fail to
+> connect through the proxy.
+>
+> If you have no proxy client, set `PROXIES` to `{"http": "", "https": ""}` to go direct — only works
+> if your network can reach `kards.com` directly.
+
 ## Project structure
 
 ```
