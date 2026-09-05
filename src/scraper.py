@@ -6,7 +6,7 @@ import time
 
 import requests
 
-from src.config import API_URL, HEADERS, KOSTS, NATION_IDS, NATION_NAMES, CARDS_QUERY
+from src.config import API_URL, CARDS_QUERY, HEADERS, KOSTS, NATION_IDS, NATION_NAMES
 from src.image import save_card_image
 
 
@@ -45,9 +45,7 @@ def scrape_all_cards():
 
                 time.sleep(1)
 
-                response = requests.post(
-                    API_URL, headers=HEADERS, json=json_data
-                )
+                response = requests.post(API_URL, headers=HEADERS, json=json_data)
 
                 data = response.json()
                 if "data" not in data or "cards" not in data["data"]:
@@ -85,12 +83,7 @@ def scrape_all_cards():
                     save_card_image(image_name, save_name, dest_dir)
                     downloaded_ids.add(card_id)
 
-                has_next = (
-                    data.get("data", {})
-                    .get("cards", {})
-                    .get("pageInfo", {})
-                    .get("hasNextPage", False)
-                )
+                has_next = data.get("data", {}).get("cards", {}).get("pageInfo", {}).get("hasNextPage", False)
                 if has_next:
                     offset += 20
                 else:
