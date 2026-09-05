@@ -1,6 +1,7 @@
 """Kards 卡牌爬取主逻辑 —— 遍历国家与费用，分页拉取所有卡牌信息并下载图片"""
 
 import json
+import logging
 import os
 import time
 
@@ -19,6 +20,8 @@ from src.config import (
 )
 from src.image import save_card_image
 from src.utils import sanitize_filename
+
+logger = logging.getLogger(__name__)
 
 # 分页大小（与 CARDS_QUERY 中 first: 20 保持一致）
 PAGE_SIZE = 20
@@ -69,7 +72,7 @@ def fetch_card_page(nid, k, offset):
                 return [], False
             return cards.get("edges", []), cards.get("pageInfo", {}).get("hasNextPage", False)
         except requests.exceptions.RequestException as e:
-            print(f"请求失败（第 {attempt}/{RETRY} 次）：{e}")
+            logger.warning("请求失败（第 %d/%d 次）：%s", attempt, RETRY, e)
             time.sleep(2**attempt)
 
     raise requests.exceptions.RequestException(
@@ -126,7 +129,7 @@ def scrape_all_cards():
         for k in KOSTS:
             key = f"{nid}_{k}"
             if key in completed:
-                print(f"跳过已完成组合：{key}（{nname}，{k}k）")
+                logger.info("跳过已完成组合：%s（%s，%dk）", key, nname, k)
                 continue
 
             failed_downloads = 0
@@ -135,7 +138,7 @@ def scrape_all_cards():
                 try:
                     edges, has_next = fetch_card_page(nid, k, offset)
                 except requests.exceptions.RequestException as e:
-                    print(f"组合 {key} 请求最终失败：{e}，本组合不标记完成，下次续爬")
+                    logger.error("组合 %s 请求最终失败：%s，本组合不标记完成，下次续爬", key, e)
                     failed_downloads = -1  # 标记为整体失败
                     break
 
@@ -148,12 +151,12 @@ def scrape_all_cards():
                     dest_dir = os.path.join("imgs", nname, f"{k}k")
 
                     if card_id in downloaded_ids:
-                        print(f"已下载过，跳过：{card_id}")
+                        logger.info("已下载过，跳过：%s", card_id)
                         continue
 
                     target_path = os.path.join(dest_dir, save_name + ".png")
                     if os.path.exists(target_path):
-                        print(f"文件已存在，跳过：{target_path}")
+                        logger.info("文件已存在，跳过：%s", target_path)
                         downloaded_ids.add(card_id)
                         continue
 
@@ -169,15 +172,20 @@ def scrape_all_cards():
 
             if failed_downloads:
                 reason = "请求失败" if failed_downloads < 0 else f"{failed_downloads} 张图片下载失败"
-                print(f"组合 {key} {reason}，不标记完成，下次续爬")
+                logger.warning("组合 %s %s，不标记完成，下次续爬", key, reason)
                 continue
 
             completed.add(key)
             _save_checkpoint(completed)
-            print(f"完成组合：{key}（{nname}，{k}k）")
+            logger.info("完成组合：%s（%s，%dk）", key, nname, k)
 
-    print("爬取完成")
+    logger.info("爬取完成")
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        datefmt="%H:%M:%S",
+        level=logging.INFO,
+    )
     scrape_all_cards()

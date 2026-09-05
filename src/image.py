@@ -1,5 +1,6 @@
 """卡牌图片下载模块"""
 
+import logging
 import os
 import time
 from io import BytesIO
@@ -10,6 +11,8 @@ from PIL import Image
 
 from src.config import IMAGE_BASE_URL, PROXIES
 from src.utils import sanitize_filename
+
+logger = logging.getLogger(__name__)
 
 
 def save_card_image(card_name, custom_filename=None, dest_dir="imgs", retry=3):
@@ -48,13 +51,13 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs", retry=3):
             )
 
             if response.status_code != 200:
-                print(f"[{attempt + 1}] 请求失败 {response.status_code}: {img_url}")
+                logger.warning("[%d] 请求失败 %s: %s", attempt + 1, response.status_code, img_url)
                 continue
 
             try:
                 img = Image.open(BytesIO(response.content)).convert("RGBA")
             except Exception as img_err:
-                print(f"[{attempt + 1}] 图片解码失败: {img_err}")
+                logger.warning("[%d] 图片解码失败: %s", attempt + 1, img_err)
                 continue
 
             if custom_filename:
@@ -66,12 +69,12 @@ def save_card_image(card_name, custom_filename=None, dest_dir="imgs", retry=3):
             path = os.path.join(dest_dir, save_name)
             img.save(path, "PNG")
 
-            print(f"✔ 已保存 {path}")
+            logger.info("已保存 %s", path)
             return True
 
         except Exception as e:
-            print(f"[{attempt + 1}] 失败: {e}")
+            logger.warning("[%d] 失败: %s", attempt + 1, e)
             time.sleep(1)
 
-    print(f"❌ 最终失败: {card_name}")
+    logger.error("最终失败: %s", card_name)
     return False
