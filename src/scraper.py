@@ -1,9 +1,9 @@
 """Kards 卡牌爬取主逻辑 —— 遍历国家与费用，分页拉取所有卡牌信息并下载图片"""
 
+import json
 import os
 import time
 
-from curl_cffi import exceptions as cffi_exceptions  # noqa: N813 — curl_cffi 的异常名
 from curl_cffi import requests  # noqa: ICN001 — 项目统一用 curl_cffi 以便走代理
 
 from src.config import (
@@ -22,6 +22,8 @@ from src.utils import sanitize_filename
 
 # 分页大小（与 CARDS_QUERY 中 first: 20 保持一致）
 PAGE_SIZE = 20
+# 断点续传文件，记录已完成的国家×费用组合（格式 "国家ID_费用"）
+CHECKPOINT_FILE = "progress.json"
 
 
 def fetch_card_page(nid, k, offset):
@@ -91,17 +93,52 @@ def parse_card_node(node):
     return card_id, image_name, title
 
 
+def _load_checkpoint():
+    """读取断点文件，返回已完成组合的集合；文件缺失或损坏时返回空集合。"""
+    try:
+        with open(CHECKPOINT_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return set(data.get("completed", []))
+    except (FileNotFoundError, ValueError):
+        return set()
+
+
+def _save_checkpoint(completed):
+    """将已完成组合集合写入断点文件（先写临时文件再原子替换，避免中断损坏）。"""
+    tmp = CHECKPOINT_FILE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump({"completed": sorted(completed)}, f, ensure_ascii=False, indent=2)
+    os.replace(tmp, CHECKPOINT_FILE)
+
+
 def scrape_all_cards():
-    """遍历所有国家与费用组合，分页爬取卡牌并下载图片。"""
+    """遍历所有国家与费用组合，分页爬取卡牌并下载图片，支持断点续传。
+
+    每个「国家×费用」组合完成后写入 checkpoint；组合发生未捕获异常或
+    有图片下载失败时**不**标记完成，下次运行会重新尝试该组合。
+    """
+    completed = _load_checkpoint()
     downloaded_ids = set()
     selected_nation_ids = NATION_IDS if NATION_IDS else list(NATION_NAMES.keys())
 
     for nid in selected_nation_ids:
         nname = NATION_NAMES.get(nid, str(nid))
         for k in KOSTS:
+            key = f"{nid}_{k}"
+            if key in completed:
+                print(f"跳过已完成组合：{key}（{nname}，{k}k）")
+                continue
+
+            failed_downloads = 0
             offset = 0
             while True:
-                edges, has_next = fetch_card_page(nid, k, offset)
+                try:
+                    edges, has_next = fetch_card_page(nid, k, offset)
+                except requests.exceptions.RequestException as e:
+                    print(f"组合 {key} 请求最终失败：{e}，本组合不标记完成，下次续爬")
+                    failed_downloads = -1  # 标记为整体失败
+                    break
+
                 for edge in edges:
                     parsed = parse_card_node(edge.get("node", {}))
                     if parsed is None:
@@ -120,13 +157,24 @@ def scrape_all_cards():
                         downloaded_ids.add(card_id)
                         continue
 
-                    save_card_image(image_name, save_name, dest_dir)
-                    downloaded_ids.add(card_id)
+                    if save_card_image(image_name, save_name, dest_dir):
+                        downloaded_ids.add(card_id)
+                    else:
+                        failed_downloads += 1
 
                 if has_next:
                     offset += PAGE_SIZE
                 else:
                     break
+
+            if failed_downloads:
+                reason = "请求失败" if failed_downloads < 0 else f"{failed_downloads} 张图片下载失败"
+                print(f"组合 {key} {reason}，不标记完成，下次续爬")
+                continue
+
+            completed.add(key)
+            _save_checkpoint(completed)
+            print(f"完成组合：{key}（{nname}，{k}k）")
 
     print("爬取完成")
 

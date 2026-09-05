@@ -4,6 +4,10 @@ imgs/
 *.avif
 *.webp
 
+# --- 运行期生成的状态/中间文件 ---
+progress.json
+progress.json.tmp
+
 # --- Python 缓存与运行环境 ---
 __pycache__/
 *.py[cod]
